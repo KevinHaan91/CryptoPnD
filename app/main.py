@@ -2,12 +2,14 @@ import os
 import asyncio
 import logging
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel  # ✅ This is the missing import
+
 from exchanges.binance import Binance
 from exchanges.kucoin import KuCoin
 from exchanges.coingecko import CoinGecko
 from detector import detect_pump
 from model import predict_pump_score
-from fastapi.middleware.cors import CORSMiddleware
 
 # Configure root logger
 logging.basicConfig(level=logging.INFO)
