@@ -2,7 +2,7 @@ import os
 import asyncio
 import logging
 from fastapi import FastAPI, HTTPException
-#from exchanges.binance import Binance
+from exchanges.binance import Binance
 from exchanges.kucoin import KuCoin
 from exchanges.coingecko import CoinGecko
 from detector import detect_pump
