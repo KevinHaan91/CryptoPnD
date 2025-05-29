@@ -2,7 +2,7 @@ import os
 import asyncio
 import logging
 from fastapi import FastAPI, HTTPException
-from exchanges.binance import Binance
+#from exchanges.binance import Binance
 from exchanges.kucoin import KuCoin
 from exchanges.coingecko import CoinGecko
 from detector import detect_pump
@@ -18,13 +18,13 @@ app = FastAPI()
 async def get_pump_score(symbol: str = "BTCUSDT"):
     logger.info(f"Received request for symbol={symbol}")
     try:
-        binance = Binance()
+        #binance = Binance()
         kucoin = KuCoin()
         gecko = CoinGecko()
 
         # Fire off all three fetches in parallel
         data = await asyncio.gather(
-            binance.get_price_volume(symbol),
+           # binance.get_price_volume(symbol),
             kucoin.get_price_volume(symbol),
             gecko.get_price_volume(symbol),
             return_exceptions=True
