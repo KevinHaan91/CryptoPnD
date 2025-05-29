@@ -7,13 +7,21 @@ from exchanges.kucoin import KuCoin
 from exchanges.coingecko import CoinGecko
 from detector import detect_pump
 from model import predict_pump_score
+from fastapi.middleware.cors import CORSMiddleware
 
 # Configure root logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("crypto_pump_detector")
 
 app = FastAPI()
- 
+ # Add CORS middleware here
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # or specify ["https://cryptopnd.vercel.app"] for stricter security
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 @app.get("/pump-score")
 async def get_pump_score(symbol: str = "BTCUSDT"):
     logger.info(f"Received request for symbol={symbol}")
