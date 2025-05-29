@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("crypto_pump_detector")
 
 app = FastAPI()
-
+ 
 @app.get("/pump-score")
 async def get_pump_score(symbol: str = "BTCUSDT"):
     logger.info(f"Received request for symbol={symbol}")
