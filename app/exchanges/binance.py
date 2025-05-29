@@ -6,7 +6,7 @@ logger = logging.getLogger("crypto_pump_detector.binance")
 
 class Binance(ExchangeInterface):
     async def get_price_volume(self, symbol: str):
-        url = f"https://api.binance.com/api/v3/ticker/24hr?symbol={symbol}"
+        url = f"https://api.binance.us/api/v3/ticker/24hr?symbol={symbol}"
         async with httpx.AsyncClient() as client:
             resp = await client.get(url)
             j = resp.json()
