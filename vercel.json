@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://your-backend-url.up.railway.app/:path*"
+      "destination": "https://cryptopnd-production.up.railway.app/api/:path*"
     }
   ]
 }
