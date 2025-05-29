@@ -1,50 +1,67 @@
-import React, { useState } from "react";
+// FRONTEND: pages/index.js
+import React, { useEffect, useState } from "react";
+
+const COINS = ["BTCUSDT", "ETHUSDT", "XRPUSDT", "DOGEUSDT", "ADAUSDT", "SOLUSDT"];
+const REFRESH_INTERVAL = 10000; // every 10 seconds
 
 export default function Home() {
-  const [symbol, setSymbol] = useState("BTCUSDT");
-  const [result, setResult] = useState(null);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchPumpScore = async () => {
+  const fetchData = async () => {
     setLoading(true);
-    setResult(null);
-
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
-      const res = await fetch(`${baseUrl}/pump-score?symbol=${symbol}`);
+      const res = await fetch(`${baseUrl}/pump-scores`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ symbols: COINS }),
+      });
 
-      if (!res.ok) {
-        throw new Error(`API returned ${res.status}`);
+      const result = await res.json();
+      if (Array.isArray(result)) {
+        setData(result.sort((a, b) => b.score - a.score));
+      } else {
+        setData([]);
       }
-
-      const data = await res.json();
-      setResult(data);
     } catch (err) {
-      setResult({ error: err.message });
+      console.error("Error fetching pump scores:", err);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
+
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, REFRESH_INTERVAL);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <main style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <h1>Crypto Pump Score</h1>
-      <input
-        value={symbol}
-        onChange={(e) => setSymbol(e.target.value)}
-        placeholder="e.g., BTCUSDT"
-        style={{ marginRight: "1rem", padding: "0.5rem" }}
-      />
-      <button onClick={fetchPumpScore} style={{ padding: "0.5rem 1rem" }}>
-        Check
-      </button>
-
+      <h1>Live Pump & Dump Leaderboard</h1>
       {loading && <p>Loading...</p>}
-
-      {result && (
-        <pre style={{ backgroundColor: "#f4f4f4", padding: "1rem", marginTop: "1rem" }}>
-          {JSON.stringify(result, null, 2)}
-        </pre>
+      {!loading && (
+        <table>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Score</th>
+              <th>Flags</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((coin, idx) => (
+              <tr key={idx}>
+                <td>{coin.symbol}</td>
+                <td>{coin.score.toFixed(2)}</td>
+                <td>{JSON.stringify(coin.flags)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </main>
   );
