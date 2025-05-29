@@ -1,49 +1,51 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from "react";
 
 export default function Home() {
-  const [data, setData] = useState(null);
-  const [symbol, setSymbol] = useState('BTCUSDT');
+  const [symbol, setSymbol] = useState("BTCUSDT");
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchPumpScore = async () => {
-    const res = await fetch(`/api/pump-score?symbol=${symbol}`);
-    const result = await res.json();
-    setData(result);
+    setLoading(true);
+    setResult(null);
+
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+      const res = await fetch(`${baseUrl}/pump-score?symbol=${symbol}`);
+
+      if (!res.ok) {
+        throw new Error(`API returned ${res.status}`);
+      }
+
+      const data = await res.json();
+      setResult(data);
+    } catch (err) {
+      setResult({ error: err.message });
+    }
+
+    setLoading(false);
   };
 
-  useEffect(() => {
-    fetchPumpScore();
-  }, [symbol]);
-
   return (
-    <div className='p-8 font-sans text-white bg-gray-900 min-h-screen'>
-      <h1 className='text-4xl mb-4 font-bold'>Pump & Dump Detector</h1>
+    <main style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+      <h1>Crypto Pump Score</h1>
       <input
-        type='text'
-        className='p-2 rounded text-black'
         value={symbol}
-        onChange={(e) => setSymbol(e.target.value.toUpperCase())}
+        onChange={(e) => setSymbol(e.target.value)}
+        placeholder="e.g., BTCUSDT"
+        style={{ marginRight: "1rem", padding: "0.5rem" }}
       />
-      <button
-        onClick={fetchPumpScore}
-        className='ml-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded'
-      >
-        Refresh
+      <button onClick={fetchPumpScore} style={{ padding: "0.5rem 1rem" }}>
+        Check
       </button>
-      {data && (
-        <div className='mt-6 bg-gray-800 p-4 rounded shadow-lg'>
-          <h2 className='text-2xl font-semibold mb-2'>Symbol: {data.symbol}</h2>
-          <p><strong>Pump Score:</strong> {data.score}</p>
-          <p><strong>Flags:</strong> {data.flags.join(', ')}</p>
-          <h3 className='mt-4 font-semibold'>Exchange Data:</h3>
-          <ul className='list-disc pl-5'>
-            {data.data.map((entry, i) => (
-              <li key={i}>
-                {entry.exchange}: Price = ${entry.price}, Volume = {entry.volume}
-              </li>
-            ))}
-          </ul>
-        </div>
+
+      {loading && <p>Loading...</p>}
+
+      {result && (
+        <pre style={{ backgroundColor: "#f4f4f4", padding: "1rem", marginTop: "1rem" }}>
+          {JSON.stringify(result, null, 2)}
+        </pre>
       )}
-    </div>
+    </main>
   );
 }
