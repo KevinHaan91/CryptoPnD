@@ -5,7 +5,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/:path*`
+        destination: 'https://cryptopnd-production.up.railway.app/:path*'
       }
     ];
   }
