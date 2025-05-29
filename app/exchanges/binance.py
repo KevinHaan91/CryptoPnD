@@ -7,6 +7,11 @@ class Binance(ExchangeInterface):
         async with httpx.AsyncClient() as client:
             r = await client.get(url)
             j = r.json()
+
+            if "lastPrice" not in j:
+                print("❌ Binance API response:", j)  # ← Add this
+                raise ValueError(f"Invalid Binance response for symbol: {symbol}")
+
             return {
                 "exchange": "binance",
                 "price": float(j["lastPrice"]),
