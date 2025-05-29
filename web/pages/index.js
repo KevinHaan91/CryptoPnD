@@ -1,8 +1,8 @@
 // FRONTEND: pages/index.js
 import React, { useEffect, useState } from "react";
 
-const COINS = ["BTCUSDT", "ETHUSDT", "XRPUSDT", "DOGEUSDT", "ADAUSDT", "SOLUSDT"];
-const REFRESH_INTERVAL = 10000; // every 10 seconds
+const COINS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "SOLUSDT", "DOTUSDT", "TRXUSDT", "AVAXUSDT", "SHIBUSDT", "MATICUSDT", "LTCUSDT", "UNIUSDT", "ATOMUSDT", "ETCUSDT", "XMRUSDT", "NEARUSDT", "XLMUSDT", "ALGOUSDT", "FILUSDT", "APEUSDT", "FTMUSDT", "EOSUSDT", "GRTUSDT"];
+const REFRESH_INTERVAL = 5000; // every 10 seconds
 
 export default function Home() {
   const [data, setData] = useState([]);
@@ -42,8 +42,6 @@ export default function Home() {
   return (
     <main style={{ padding: "2rem", fontFamily: "sans-serif" }}>
       <h1>Live Pump & Dump Leaderboard</h1>
-      {loading && <p>Loading...</p>}
-      {!loading && (
         <table>
           <thead>
             <tr>
@@ -62,7 +60,6 @@ export default function Home() {
             ))}
           </tbody>
         </table>
-      )}
     </main>
   );
 }
